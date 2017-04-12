@@ -4,6 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>cannal</groupId>
+        <artifactId>app-parent</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>  <!--本例中此处是可选的-->
+    </parent>
+
     <groupId>cannal</groupId>
     <artifactId>app-service</artifactId>
     <version>1.0.0</version>

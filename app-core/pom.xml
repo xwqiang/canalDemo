@@ -8,6 +8,12 @@
     <artifactId>app-core</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <parent>
+        <groupId>cannal</groupId>
+        <artifactId>app-parent</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>  <!--本例中此处是可选的-->
+    </parent>
 
     <dependencies>
         <dependency>
