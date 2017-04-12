@@ -93,9 +93,9 @@ public class SimpleCanalClientExample {
                 } else {
                     printColumn(rowData.getBeforeColumnsList());
                     printColumn(rowData.getAfterColumnsList());
-                    printInfo(message_id, rowData.getBeforeColumnsList(), "OTHER", entry.getHeader().getSchemaName(),
+                    printInfo(message_id, rowData.getBeforeColumnsList(), "UPDATE", entry.getHeader().getSchemaName(),
                         entry.getHeader().getTableName());
-                    printInfo(message_id, rowData.getAfterColumnsList(), "OTHER", entry.getHeader().getSchemaName(),
+                    printInfo(message_id, rowData.getAfterColumnsList(), "UPDATE", entry.getHeader().getSchemaName(),
                         entry.getHeader().getTableName());
                 }
             }
@@ -112,14 +112,13 @@ public class SimpleCanalClientExample {
         Column column;
         if (columnIt.hasNext()) {
             column = columnIt.next();
-            sb.append(",").append(column.getName()).append(":").append(column.getValue()).append(":")
-                .append(column.getUpdated() ? 1 : 0);
+            sb.append(",").append(column.getName()).append(":").append(column.getValue());
             while (columnIt.hasNext()) {
                 column = columnIt.next();
-                sb.append("|").append(column.getName()).append(":")
-                    .append(column.getValue()).append(":").append(column.getUpdated() ? 1 : 0);
+                sb.append("|").append(column.getName()).append(":") .append(column.getValue());
             }
         }
+        System.out.println(sb.toString());
         LOG.info(sb.toString());
     }
 
