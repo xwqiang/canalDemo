@@ -11,6 +11,9 @@ cd ${PROGRAME_HOME}
 cpath=$CLASSPATH:${RESOURCE_PATH}
 case "$1" in
   start)
+    sh $0 stop
+    sleep 1
+
     for file in lib/*.jar; do
       cpath=$cpath:$file
     done
