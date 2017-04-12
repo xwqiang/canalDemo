@@ -31,7 +31,8 @@ public class SimpleCanalClientExample {
         int emptyCount = 0;
         try {
             connector.connect();
-            connector.subscribe(".*\\..*");
+            connector.subscribe("cards\\..*");
+//            connector.subscribe(".*\\..*");
             connector.rollback();
             int totalEmtryCount = 120;
             while (emptyCount < totalEmtryCount) {

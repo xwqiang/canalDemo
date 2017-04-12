@@ -29,3 +29,16 @@ SHOW SLAVE STATUS
 SHOW BINARY LOGS
 show binlog events
 ```
+
+关于订阅
+```
+mysql 数据解析关注的表，Perl正则表达式.  
+多个正则之间以逗号(,)分隔，转义符需要双斜杠(\\)  
+  
+常见例子：  
+1.  所有表：.*   or  .*\\..*  
+2.  canal schema下所有表： canal\\..*  
+3.  canal下的以canal打头的表：canal\\.canal.*  
+4.  canal schema下的一张表：canal.test1  
+5.  多个规则组合使用：canal\\..*,mysql.test1,mysql.test2 (逗号分隔)  
+```
