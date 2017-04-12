@@ -121,7 +121,6 @@ public class SimpleCanalClientExample {
                     .append(column.getValue());
             }
         }
-        System.out.println(sb.toString());
         LOG.info(sb.toString());
     }
 

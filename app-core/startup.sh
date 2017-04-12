@@ -32,7 +32,7 @@ case "$1" in
   ;;
 
   *)
-  echo "Usage: run.sh {start|stop|restart}"
+  echo "Usage: startup.sh {start|stop|restart}"
   ;;
 esac
 exit 0
