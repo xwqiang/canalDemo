@@ -34,7 +34,7 @@ public class SimpleCanalClientExample {
             connector.subscribe("cards\\..*");
 //            connector.subscribe(".*\\..*");
             connector.rollback();
-            int totalEmtryCount = 120;
+            int totalEmtryCount = 12 * 60 * 60 ;// 12小时没有数据 就停了
             while (emptyCount < totalEmtryCount) {
                 Message message = connector.getWithoutAck(batchSize); // 获取指定数量的数据
                 long batchId = message.getId();
