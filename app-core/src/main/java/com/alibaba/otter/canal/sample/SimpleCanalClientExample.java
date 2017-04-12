@@ -34,7 +34,7 @@ public class SimpleCanalClientExample {
             connector.subscribe("cards\\..*");
 //            connector.subscribe(".*\\..*");
             connector.rollback();
-            int totalEmtryCount = 12 * 60 * 60 ;// 12小时没有数据 就停了
+            int totalEmtryCount = 12 * 60 * 60;// 12小时没有数据 就停了
             while (emptyCount < totalEmtryCount) {
                 Message message = connector.getWithoutAck(batchSize); // 获取指定数量的数据
                 long batchId = message.getId();
@@ -90,36 +90,34 @@ public class SimpleCanalClientExample {
                 } else if (eventType == EventType.INSERT) {
                     printInfo(message_id, rowData.getAfterColumnsList(), "INSERT", entry.getHeader().getSchemaName(),
                         entry.getHeader().getTableName());
-                } else if (eventType == EventType.UPDATE) {
-                    printColumn(rowData.getBeforeColumnsList());
-                    printColumn(rowData.getAfterColumnsList());
-                    printInfo(message_id, rowData.getBeforeColumnsList(), "UPDATE", entry.getHeader().getSchemaName(),
-                        entry.getHeader().getTableName());
-                    printInfo(message_id, rowData.getAfterColumnsList(), "UPDATE", entry.getHeader().getSchemaName(),
-                        entry.getHeader().getTableName());
                 } else {
-                    System.out.println("-------> before");
                     printColumn(rowData.getBeforeColumnsList());
-                    System.out.println("-------> after");
                     printColumn(rowData.getAfterColumnsList());
+                    printInfo(message_id, rowData.getBeforeColumnsList(), "OTHER", entry.getHeader().getSchemaName(),
+                        entry.getHeader().getTableName());
+                    printInfo(message_id, rowData.getAfterColumnsList(), "OTHER", entry.getHeader().getSchemaName(),
+                        entry.getHeader().getTableName());
                 }
             }
         }
     }
 
 
-    private static void printInfo(long message_id, List<Column> columnList, String eventType, String schemaName, String tableName) {
+    private static void printInfo(long message_id, List<Column> columnList, String eventType, String schemaName,
+        String tableName) {
         StringBuilder sb = new StringBuilder();
-        sb.append(message_id).append(",").append(schemaName).append(",") .append(tableName).append(",") .append(eventType);
+        sb.append(message_id).append(",").append(schemaName).append(",").append(tableName).append(",")
+            .append(eventType);
         Iterator<Column> columnIt = columnList.iterator();
         Column column;
         if (columnIt.hasNext()) {
             column = columnIt.next();
-            sb.append(",").append(column.getName()).append(":").append(column.getValue());
+            sb.append(",").append(column.getName()).append(":").append(column.getValue()).append(":")
+                .append(column.getUpdated() ? 1 : 0);
             while (columnIt.hasNext()) {
                 column = columnIt.next();
                 sb.append("|").append(column.getName()).append(":")
-                    .append(column.getValue());
+                    .append(column.getValue()).append(":").append(column.getUpdated() ? 1 : 0);
             }
         }
         LOG.info(sb.toString());
