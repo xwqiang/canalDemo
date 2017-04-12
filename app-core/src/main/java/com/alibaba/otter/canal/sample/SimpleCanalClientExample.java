@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public class SimpleCanalClientExample {
 
-    private static final Logger LOG = LoggerFactory.getLogger("STDOUT");
+    private static final Logger LOG = LoggerFactory.getLogger(SimpleCanalClientExample.class);
 
     public static void main(String args[]) {
         // 创建链接
