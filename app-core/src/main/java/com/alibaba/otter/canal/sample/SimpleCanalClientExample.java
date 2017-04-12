@@ -11,14 +11,21 @@ import com.alibaba.otter.canal.protocol.CanalEntry.RowChange;
 import com.alibaba.otter.canal.protocol.CanalEntry.RowData;
 import com.alibaba.otter.canal.protocol.Message;
 import java.net.InetSocketAddress;
+import java.util.Iterator;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SimpleCanalClientExample {
 
+    private static final Logger LOG = LoggerFactory.getLogger("STDOUT");
+
     public static void main(String args[]) {
         // 创建链接
-        CanalConnector connector = CanalConnectors.newSingleConnector(new InetSocketAddress(AddressUtils.getHostIp(),
-                11111), "example", "", "");
+        String ip = AddressUtils.getHostIp();
+        ip = "172.21.62.101";
+        CanalConnector connector = CanalConnectors.newSingleConnector(new InetSocketAddress(ip,
+            11111), "example", "", "");
 //        CanalConnector connector = CanalConnectors.newSingleConnector(new InetSocketAddress("172.21.50.65",11111), "example", "canal", "canal");
         int batchSize = 1000;
         int emptyCount = 0;
@@ -41,7 +48,7 @@ public class SimpleCanalClientExample {
                 } else {
                     emptyCount = 0;
                     // System.out.printf("message[batchId=%s,size=%s] \n", batchId, size);
-                    printEntry(message.getEntries());
+                    printEntry(message.getId(), message.getEntries());
                 }
 
                 connector.ack(batchId); // 提交确认
@@ -54,9 +61,10 @@ public class SimpleCanalClientExample {
         }
     }
 
-    private static void printEntry(List<Entry> entrys) {
+    private static void printEntry(long message_id, List<Entry> entrys) {
         for (Entry entry : entrys) {
-            if (entry.getEntryType() == EntryType.TRANSACTIONBEGIN || entry.getEntryType() == EntryType.TRANSACTIONEND) {
+            if (entry.getEntryType() == EntryType.TRANSACTIONBEGIN
+                || entry.getEntryType() == EntryType.TRANSACTIONEND) {
                 continue;
             }
 
@@ -65,20 +73,29 @@ public class SimpleCanalClientExample {
                 rowChage = RowChange.parseFrom(entry.getStoreValue());
             } catch (Exception e) {
                 throw new RuntimeException("ERROR ## parser of eromanga-event has an error , data:" + entry.toString(),
-                        e);
+                    e);
             }
 
             EventType eventType = rowChage.getEventType();
-            System.out.println(String.format("================> binlog[%s:%s] , name[%s,%s] , eventType : %s",
-                    entry.getHeader().getLogfileName(), entry.getHeader().getLogfileOffset(),
-                    entry.getHeader().getSchemaName(), entry.getHeader().getTableName(),
-                    eventType));
+//            System.out.println(String.format("================> binlog[%s:%s] , name[%s,%s] , eventType : %s",
+//                entry.getHeader().getLogfileName(), entry.getHeader().getLogfileOffset(),
+//                entry.getHeader().getSchemaName(), entry.getHeader().getTableName(),
+//                eventType));
 
             for (RowData rowData : rowChage.getRowDatasList()) {
                 if (eventType == EventType.DELETE) {
-                    printColumn(rowData.getBeforeColumnsList());
+                    printInfo(message_id, rowData.getBeforeColumnsList(), "DELETE", entry.getHeader().getSchemaName(),
+                        entry.getHeader().getTableName());
                 } else if (eventType == EventType.INSERT) {
+                    printInfo(message_id, rowData.getAfterColumnsList(), "INSERT", entry.getHeader().getSchemaName(),
+                        entry.getHeader().getTableName());
+                } else if (eventType == EventType.UPDATE) {
+                    printColumn(rowData.getBeforeColumnsList());
                     printColumn(rowData.getAfterColumnsList());
+                    printInfo(message_id, rowData.getBeforeColumnsList(), "UPDATE", entry.getHeader().getSchemaName(),
+                        entry.getHeader().getTableName());
+                    printInfo(message_id, rowData.getAfterColumnsList(), "UPDATE", entry.getHeader().getSchemaName(),
+                        entry.getHeader().getTableName());
                 } else {
                     System.out.println("-------> before");
                     printColumn(rowData.getBeforeColumnsList());
@@ -87,6 +104,25 @@ public class SimpleCanalClientExample {
                 }
             }
         }
+    }
+
+
+    private static void printInfo(long message_id, List<Column> columnList, String eventType, String schemaName, String tableName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(message_id).append(",").append(schemaName).append(",") .append(tableName).append(",") .append(eventType);
+        Iterator<Column> columnIt = columnList.iterator();
+        Column column;
+        if (columnIt.hasNext()) {
+            column = columnIt.next();
+            sb.append(",").append(column.getName()).append(":").append(column.getValue());
+            while (columnIt.hasNext()) {
+                column = columnIt.next();
+                sb.append("|").append(column.getName()).append(":")
+                    .append(column.getValue());
+            }
+        }
+        System.out.println(sb.toString());
+        LOG.info(sb.toString());
     }
 
     private static void printColumn(List<Column> columns) {

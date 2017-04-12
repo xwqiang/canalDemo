@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <property name="BASE_PATH" value="/ky/xuwuqiang/cannal/"/>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d %-5level [%thread] %C[%M %L]: %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <Encoding>UTF-8</Encoding>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${BASE_PATH}/info.log.%d{yyyy-MM-dd}
+      </fileNamePattern>
+      <MaxHistory>30</MaxHistory>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d%msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>ERROR</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+    <Encoding>UTF-8</Encoding>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${BASE_PATH}/error.log.%d{yyyy-MM-dd}
+      </fileNamePattern>
+      <MaxHistory>30</MaxHistory>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d %-5level [%thread] %C[%M %L]: %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root>
+    <!--<appender-ref ref="STDOUT" level="debug"/>-->
+    <appender-ref ref="info" level="debug"/>
+    <appender-ref ref="error" level="error"/>
+  </root>
+</configuration>

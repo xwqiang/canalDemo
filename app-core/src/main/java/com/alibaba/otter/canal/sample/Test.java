@@ -7,6 +7,7 @@ import com.alibaba.otter.canal.common.utils.AddressUtils;
  */
 public class Test {
     public static void main(String[] args) {
+        System.out.println(System.currentTimeMillis());
         String ip = AddressUtils.getHostIp();
         System.out.println(ip);
     }
