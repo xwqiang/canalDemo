@@ -118,7 +118,6 @@ public class SimpleCanalClientExample {
                 sb.append("|").append(column.getName()).append(":") .append(column.getValue());
             }
         }
-        System.out.println(sb.toString());
         LOG.info(sb.toString());
     }
 
